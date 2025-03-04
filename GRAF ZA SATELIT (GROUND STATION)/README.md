@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project provides a graphical interface to receive, process, visualize, and store satellite telemetry data from a serial COM port. The data includes altitude, temperature, and pressure readings, which are plotted in real-time.
+This project provides a graphical interface to receive, process, visualize, and store satellite telemetry data in real time from a serial COM port. The data includes altitude, temperature, and pressure readings, which are plotted in real-time. 
 
 ## Features
 
