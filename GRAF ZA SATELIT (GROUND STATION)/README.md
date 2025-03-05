@@ -91,8 +91,6 @@ Pull requests are welcome! For major changes, please open an issue first to disc
 
 For any questions or suggestions, feel free to open an issue on GitHub.
 
----
 
-Enjoy visualizing your satellite data! 🚀
 
 
