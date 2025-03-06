@@ -1,27 +1,25 @@
-import PySimpleGUI as sg # type: ignore
+import PySimpleGUI as sg
 import numpy as np
-import pandas as pd # type: ignore
+import pandas as pd
 import socket
 import threading
 import time
 import serial
-from openpyxl.drawing.image import Image # type: ignore
+from openpyxl.drawing.image import Image 
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-# Initialize variables
 time_values = []
 altitude_values = []
 temperature_values = []
 pressure_values = []
 
-# Set the COM port and baudrate for serial communication
+# Set the COM port and baudrate for serial communication (in my case its COM5 and baud rate: 115200
 ser = serial.Serial('COM5', 115200, timeout=1)  
 ser.flush() 
 
-simulation_mode = False  # Set simulation_mode to False to read real-time data
+simulation_mode = False  # Set to False to read real-time data
 
-# Function to read data from COM port
 def read_com_port():
     if ser.in_waiting > 0:
         data = ser.readline().decode('utf-8').strip()
@@ -34,7 +32,6 @@ def decode_data(data):
         # Split the data by ';' (assuming format like A8;B0;80;30;C2)
         parts = data.split(';')
         
-        # Remove empty parts resulting from leading/trailing semicolons or multiple semicolons in a row
         parts = [part for part in parts if part]
         
         # If there are not exactly 5 VALID parts, return error message
