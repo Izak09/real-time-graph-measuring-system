@@ -15,8 +15,12 @@ temperature_values = []
 pressure_values = []
 
 # Set the COM port and baudrate for serial communication (in my case its COM5 and baud rate: 115200
-ser = serial.Serial('COM5', 115200, timeout=1)  
-ser.flush() 
+try:
+    ser = serial.Serial('COM4', 9600, timeout=1)
+    ser.flush()
+except serial.SerialException as e:
+    print(f"Error opening serial port: {e}")
+    exit(1)
 
 simulation_mode = False  # Set to False to read real-time data
 
@@ -31,13 +35,12 @@ def decode_data(data):
     try:
         # Split the data by ';' (assuming format like A8;B0;80;30;C2)
         parts = data.split(';')
-        
         parts = [part for part in parts if part]
         
         # If there are not exactly 5 VALID parts, return error message
         if len(parts) != 5:
-            print(f"Data format error: {data}")
-            return None, None, None
+        print(f"Data format error: {data}")
+        return None, None, None, None
         
         # Decode the hexadecimal values into integers
         temp_data = int(parts[0], 16) 
