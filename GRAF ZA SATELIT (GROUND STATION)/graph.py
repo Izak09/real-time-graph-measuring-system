@@ -5,6 +5,7 @@ import socket
 import threading
 import time
 import serial
+import math
 from openpyxl.drawing.image import Image 
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
@@ -56,14 +57,27 @@ def decode_data(data):
 
 #Function to extract GPS data from NMEA string
 #Also some additional exeception handlinng from NMEA string
-jef extract_gps_coordinates(gps_data)
+def extract_gps_coordinates(gps_data)
     try:
         if gps_data-startsWith("$GPGGA") or gps_data.startsWith("$GPRMC"):
             msg = pymea2.parse(gps_data)
             if hasattr(msg, 'lattitude') and hasattr(msg, 'longitude'):
                 return msg.latitude, msg.longitude
         return None, None
+except pymea2.Parse as e:
+    printf (f"Error extracting GPS data: {e}")
+    return None, None
 
+# Calculate ALTITUDE from PRESSURE
+def altitude_from_pressure(pressure):
+    pressure_sea_level = 1013.25
+    temp_sea_level = 288.15
+    lapse_rate = 0.0065
+    gas_constant = 8.3144
+    molar_mass = 0.0289644
+    gravity = 9.80665
+
+altitude = (temp_sea_level / lapse_rate) * (1 - (pressure / pressure_sea_level) ** ((gas_constant * lapse_rate) / (gravity * molar_mass))) # Barometric formula 
 
 def listen_for_data():
     global time_values, altitude_values, temperature_values, pressure_values, latitude_values, longitude_values
