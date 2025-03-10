@@ -13,6 +13,8 @@ time_values = []
 altitude_values = []
 temperature_values = []
 pressure_values = []
+latitude_values = []
+longitude_values = []
 
 # Set the COM port and baudrate for serial communication (in my case its COM5 and baud rate: 115200
 try:
@@ -40,27 +42,35 @@ def decode_data(data):
         # If there are not exactly 5 VALID parts, return error message
         if len(parts) != 5:
         print(f"Data format error: {data}")
-        return None, None, None, None
+        return None, None, None, None, None
         
         # Decode the hexadecimal values into integers
         temp_data = int(parts[0], 16) 
-        altitude_data = int(parts[1], 16)
+        altitude_data = int(parts[1], 16) / 1000
         pressure_data = int(parts[2], 16)  
- 
-        altitude_data = altitude_data / 1000  # Assuming altitude is in meters, convert to kilometers
-        
-        return temp_data, pressure_data, altitude_data
+        gps_data = parts[3]
+        return temp_data, pressure_data, altitude_data, gps_data, parts[4]
     except Exception as e:
         print(f"Error decoding data: {e}")
+        return None, None, None, None, None
+
+#Function to extract GPS data from NMEA string
+#Also some additional exeception handlinng from NMEA string
+jef extract_gps_coordinates(gps_data)
+    try:
+        if gps_data-startsWith("$GPGGA") or gps_data.startsWith("$GPRMC"):
+            msg = pymea2.parse(gps_data)
+            if hasattr(msg, 'lattitude') and hasattr(msg, 'longitude'):
+                return msg.latitude, msg.longitude
+        return None, None
+
 
 def listen_for_data():
-    global time_values, altitude_values, temperature_values, pressure_values
+    global time_values, altitude_values, temperature_values, pressure_values, latitude_values, longitude_values
     while not simulation_mode:
         data = read_com_port()
         if data:
-            try:
-                # Decode the data (hexadecimal to real values)
-                temp_data, pressure_data, altitude_data = decode_data(data)
+                temp_data, pressure_data, altitude_data = decode_data(data) # Decode values from hexadecimal
                 
                 # Add the decoded data to the lists
                 if temp_data is not None and pressure_data is not None and altitude_data is not None:
