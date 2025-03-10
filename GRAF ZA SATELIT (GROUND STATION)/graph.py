@@ -116,15 +116,15 @@ def update_graph(window):
     ax3.set_xlabel('Time (s)')
     ax3.set_ylabel('Pressure (hPa)')
 
+    plt.subplots_adjust(hspace=0.4)
+    canvas_elem = window ['-CANVAS_TEMP-']
     for canvas in window['-CANVAS_TEMP-'].TKCanvas.winfo_children():
         canvas.destroy()
+canvas_fig = FigureCanvasTkAgg(fig, canvas_elem.TKCanvas)
+canvas_fig.draw()
+canvas_fig.get_tk_widget().pack()
 
-    canvas_elem = window['-CANVAS_TEMP-']
-    canvas_fig = FigureCanvasTkAgg(fig, canvas_elem.TKCanvas)
-    canvas_fig.draw()
-    canvas_fig.get_tk_widget().pack()
-
-    plt.close()
+plt.close()
 
 # Function to save data to CSV
 def save_data_to_csv():
