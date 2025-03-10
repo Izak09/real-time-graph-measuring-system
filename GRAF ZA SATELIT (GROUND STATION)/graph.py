@@ -121,16 +121,19 @@ def update_graph(window):
     for canvas in window['-CANVAS_TEMP-'].TKCanvas.winfo_children():
         canvas.destroy()
 canvas_fig = FigureCanvasTkAgg(fig, canvas_elem.TKCanvas)
-canvas_fig.draw()
+canvas_fig.draw().forget()
 canvas_fig.get_tk_widget().pack()
 
 plt.close()
 
 # Function to save data to CSV
 def save_data_to_csv():
-    data = {'Time (s)': time_values, 'Altitude (km)': altitude_values, 'Temperature (C)': temperature_values, 'Pressure (hPa)': pressure_values}
-    df = pd.DataFrame(data)
-    df.to_csv("satellite_data.csv", index=False, mode='w', header=True)
+    df = pd.DataFrame({
+        {'Time (s)': time_values, 'Altitude (km)': altitude_values, 'Temperature (C)': temperature_values, 'Pressure (hPa)': pressure_values, 'Latitude (deg)': 'Longitude (deg): longitude_values'}
+    })
+    df.to_csv("satellite_data.csv", index=False)
+    sg.popup('Data Saved to CSV')
+              
 def save_data_to_excel():
     # Format time values to a readable date-time format
     data = {
