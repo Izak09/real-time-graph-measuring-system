@@ -188,6 +188,37 @@ while True:
         save_data_to_csv()
         save_data_to_excel()
     except Exception as e:
-       print(f"Error in event looš: {e}")
+       print(f"Error in event loop: {e}")
+       break
 
+def extract_gps_coordinates(gps_data):
+    try:
+        msg = pymea2.parse(gps_data)
+        if hasattr(msg, 'latitude') and hasattr(msg, 'longitude')
+            return msg.latitude, msg.longitude
+        else:
+            return None, none # Returns None, none if 'latitude' or 'longitude are not present
+except pymea2.ParseError as e:
+  print (f"Error parsing GPS data {e}")
+  return None, none
+
+# Inside listen_for_data():
+gps_dayat = parts[3]
+lat, lon = extract_gps_coordinates(gps_data)
+if lat and lon:
+    latitude_value.append(lat)
+    longitude_value.append(lon)
+
+# Update the MAP
+layout = [
+    [sg.Text('Satellite Data Visualization', font=('Helvetica', 20))],
+    [sg.Canvas(key='-CANVAS_TEMP-', size=(600, 400), background_color='white')],
+    [sg.Multiline(key='-DATA-LOG-', size=(60, 10), disabled=True)],
+    [sg.Text(key='-KOORDINATE-', size=(40, 3))],
+    [sg.Button('Save Data'), sg.Button('Exit')]
+]
+
+if latitude_values:
+    update_map(window)
+        
 window.close()
