@@ -5,6 +5,7 @@ import socket
 import threading
 import time
 import serial
+import pymea2
 import math
 from openpyxl.drawing.image import Image 
 import matplotlib.pyplot as plt
@@ -80,6 +81,8 @@ def altitude_from_pressure(pressure):
 
 altitude = (temp_sea_level / lapse_rate) * (1 - (pressure / pressure_sea_level) ** ((gas_constant * lapse_rate) / (gravity * molar_mass))) # Barometric formula 
 
+return 
+
 def listen_for_data():
     global time_values, altitude_values, temperature_values, pressure_values, latitude_values, longitude_values
     while not simulation_mode:
@@ -152,15 +155,6 @@ def save_data_to_excel():
     except FileNotFoundError:
         df.to_excel('satellite_data.xlsx', index=False, sheet_name="Data")
 
-layout = [
-    [sg.Text('Satellite Data Visualization', font=('Helvetica', 20))],
-    [sg.Canvas(key='-CANVAS_TEMP-', size=(600, 400), background_color='white')],
-    [sg.Multiline(key='-DATA-LOG-', size=(60, 10), disabled=True)],
-    [sg.Text(key='-KOORDINATE-', size=(40, 3))],
-    [sg.Button('Save Data'), sg.Button('Exit')]
-    
-]
-
 window = sg.Window('Vizualizacija', layout, finalize=True, resizable=True, size=(1000, 600))
 
 # Start the thread to listen for satellite data from the COM port
@@ -217,6 +211,7 @@ layout = [
     [sg.Multiline(key='-DATA-LOG-', size=(60, 10), disabled=True)],
     [sg.Text(key='-KOORDINATE-', size=(40, 3))],
     [sg.Button('Save Data'), sg.Button('Exit')]
+    [sg.Image(key='-MAP-', size=(400, 300))] 
 ]
 
 if latitude_values:
