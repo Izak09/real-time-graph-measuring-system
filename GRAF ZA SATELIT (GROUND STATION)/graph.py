@@ -89,7 +89,7 @@ def listen_for_data():
     while not simulation_mode:
         data = read_com_port()
         if data:
-                temp_data, pressure_data, altitude_data = decode_data(data) # Decode values from hexadecimal
+                temp_data, pressure_data, altitude_data, gps_data, other_data = decode_data(data) # Decode values from hexadecimal
                 
                 # Add the decoded data to the lists
                 if temp_data is not None and pressure_data is not None and altitude_data is not None:
@@ -98,6 +98,12 @@ def listen_for_data():
                     altitude_values.append(altitude_data)
                     temperature_values.append(temp_data)
                     pressure_values.append(pressure_data)
+
+        # Extracts exact gps coordinates
+        lat, lon = extract_gps_coordinates(gps_data)
+                    if lat is not None and lon is not None:
+                        latitude_values.append(lat)
+                        longitude_values.append(lon)
             except Exception as e:
                 print(f"Error processing data: {e}")
         time.sleep(0.1)
