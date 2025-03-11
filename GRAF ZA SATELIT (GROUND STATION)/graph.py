@@ -227,5 +227,45 @@ layout = [
 
 if latitude_values:
     update_map(window)
-        
+
+# Create the window
+window = sg.Window('Satellite Data Visualization', layout, finalize=True, resizable=True, size=(1000, 600))
+
+# Start the data listener thread
+threading.Thread(target=listen_for_data, daemon=True).start()
+
+# Function to update data log
+def update_data_log(window):
+    while True:
+        log_text = "\n".join(
+            [f"Time: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(t))}, Temp: {temp}°C, Alt: {alt} km, Pressure: {pres} hPa, Latitude: {lat}, Longitude: {lon}"
+             for t, temp, alt, pres, lat, lon in zip(time_values, temperature_values, altitude_values, pressure_values, latitude_values, longitude_values)]
+        )
+        window['-DATA_LOG-'].update(log_text)
+        if latitude_values:
+            window['-COORDINATES-'].update(f"Lat: {latitude_values[-1]}°, Lon: {longitude_values[-1]}°")
+        time.sleep(1)
+
+# Start the data log thread
+threading.Thread(target=update_data_log, args=(window,), daemon=True).start()
+
+# Event loop
+while True:
+    try:
+        event, _ = window.read(timeout=1000)
+        if event == sg.WIN_CLOSED or event == 'Exit':
+            break
+
+        if event == 'Save Data':
+            save_data_to_csv()
+            save_data_to_excel()
+
+        if latitude_values:
+            update_map()
+
+    except Exception as e:
+        print(f"Error in event loop: {e}")
+        break
+
 window.close()
+
