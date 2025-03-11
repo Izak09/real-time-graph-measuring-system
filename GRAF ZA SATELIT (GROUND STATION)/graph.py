@@ -190,7 +190,7 @@ while True:
         event, _ = window.read(timeout=1000)
         if event == sg.WIN_CLOSED or event == 'Exit':
             break
-    if event == 'Save Data':
+        elif event == 'Save Data':
         save_data_to_csv()
         save_data_to_excel()
     except Exception as e:
