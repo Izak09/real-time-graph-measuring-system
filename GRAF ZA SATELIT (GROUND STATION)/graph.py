@@ -9,6 +9,7 @@ import math
 from openpyxl.drawing.image import Image 
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import folium 
 
 time_values = []
 altitude_values = []
