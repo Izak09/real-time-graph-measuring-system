@@ -52,6 +52,7 @@ def decode_data(data):
         altitude_data = int(parts[1], 16) / 1000
         pressure_data = int(parts[2], 16)  
         gps_data = parts[3]
+        
         return temp_data, pressure_data, altitude_data, gps_data, parts[4]
     except Exception as e:
         print(f"Error decoding data: {e}")
@@ -61,9 +62,9 @@ def decode_data(data):
 #Also some additional exeception handlinng from NMEA string
 def extract_gps_coordinates(gps_data)
     try:
-        if gps_data-startsWith("$GPGGA") or gps_data.startsWith("$GPRMC"):
+        if gps_data.startsWith("$GPGGA") or gps_data.startswith("$GPRMC"):
             msg = pymea2.parse(gps_data)
-            if hasattr(msg, 'lattitude') and hasattr(msg, 'longitude'):
+            if hasattr(msg, 'latitude') and hasattr(msg, 'longitude'):
                 return msg.latitude, msg.longitude
         return None, None
 except pymea2.Parse as e:
