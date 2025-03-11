@@ -154,20 +154,40 @@ def save_data_to_excel():
 layout = [
     [sg.Text('Satellite Data Visualization', font=('Helvetica', 20))],
     [sg.Canvas(key='-CANVAS_TEMP-', size=(600, 400), background_color='white')],
+    [sg.Multiline(key='-DATA-LOG-', size=(60, 10), disabled=True)],
+    [sg.Text(key='-KOORDINATE-', size=(40, 3))],
     [sg.Button('Save Data'), sg.Button('Exit')]
+    
 ]
 
-window = sg.Window('Vizualizacija', layout, finalize=True)
+window = sg.Window('Vizualizacija', layout, finalize=True, resizable=True, size=(1000, 600))
 
 # Start the thread to listen for satellite data from the COM port
 threading.Thread(target=listen_for_data, daemon=True).start()
 
+def update_data_log(window):
+    while True:
+        log_text = "\n".join(
+            [f"Time: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(t))}, Temp: {temp}°C, Alt: {alt} km, Pressure: {pres} hPa, Latitude: {lat}, Longitude: {lon}"
+             for t, temp, alt, pres, lat, lon in zip(time_values, temperature_values, altitude_values, pressure_values, latitude_values, longitude_values)]
+        )
+        window['-DATA_LOG-'].update(log_text)
+        if latitude_values:
+            window['-COORDINATES-'].update(f"Lat: {latitude_values[-1]}°, Lon: {longitude_values[-1]}°")
+        time.sleep(1)
+
+threading.Thread(target=update_data_log, args=(window,), daemon=True).start()
+
+# Added exception handling to catch unexpected errors during event loop
 while True:
-    event, values = window.read(timeout=1000)
-    if event == sg.WIN_CLOSED or event == 'Exit':
-        break
+    try: 
+        event, _ = window.read(timeout=1000)
+        if event == sg.WIN_CLOSED or event == 'Exit':
+            break
     if event == 'Save Data':
         save_data_to_csv()
         save_data_to_excel()
-    update_graph(window)
+    except Exception as e:
+       print(f"Error in event looš: {e}")
+
 window.close()
