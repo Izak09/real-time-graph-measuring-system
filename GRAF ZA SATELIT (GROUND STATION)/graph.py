@@ -161,9 +161,8 @@ def save_data_to_excel():
     df = pd.DataFrame(data)
 
     try:
-        excel_writer = pd.ExcelWriter('satellite_data.xlsx', engine='openpyxl', mode='a')
-        df.to_excel(excel_writer, index=False, sheet_name="Data")
-        excel_writer.save()
+        with pd.ExcelWriter('satellite_data.xlsx', engine='openpyxl', mode='a') as excel_writer:
+            df.to_excel(excel_writer, index=False, sheet_name="Data")
     except FileNotFoundError:
         df.to_excel('satellite_data.xlsx', index=False, sheet_name="Data")
 
