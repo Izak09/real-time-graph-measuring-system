@@ -140,7 +140,12 @@ plt.close()
 # Function to save data to CSV
 def save_data_to_csv():
     df = pd.DataFrame({
-        {'Time (s)': time_values, 'Altitude (km)': altitude_values, 'Temperature (C)': temperature_values, 'Pressure (hPa)': pressure_values, 'Latitude (deg)': 'Longitude (deg): longitude_values'}
+       'Time (s)': time_values,
+        'Altitude (km)': altitude_values,
+        'Temperature (°C)': temperature_values,
+        'Pressure (hPa)': pressure_values,
+        'Latitude (deg)': latitude_values,
+        'Longitude (deg)': longitude_values
     })
     df.to_csv("satellite_data.csv", index=False)
     sg.popup('Data Saved to CSV')
